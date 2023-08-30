@@ -1,7 +1,6 @@
 import re
 from requests import get,post
 from encrypt import encryptedPassword
-from urllib.parse import urlparse,parse_qs
 
 def login(userId,password) :
    response = get('http://123.123.123.123/', verify=False)
@@ -9,8 +8,7 @@ def login(userId,password) :
    address = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', url)[0]
    queryString = url.split('?')[1]
    if len(password)!=256:
-    macStringTemp=parse_qs(urlparse(url).query).get('mac')[0]
-    password = encryptedPassword(address,macStringTemp,password,queryString)
+    password = encryptedPassword(password)
    params = {
        'method': 'login',
    }

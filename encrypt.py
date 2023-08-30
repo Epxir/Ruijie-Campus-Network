@@ -1,8 +1,10 @@
-from requests import post
+import re
+from requests import get,post
+from urllib.parse import urlparse,parse_qs
 from json import loads
 from py_mini_racer import MiniRacer
 
-def encryptedPassword(address,macStringTemp,password,queryString):
+def encryptedPassword(password):
  js_code = """
 
     var $w ={};
@@ -686,6 +688,11 @@ def encryptedPassword(address,macStringTemp,password,queryString):
         return passwordEncrypt;
     };
      """
+ response = get('http://123.123.123.123/', verify=False)
+ url = response.text.split('\'')[1]
+ address = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', url)[0]
+ queryString = url.split('?')[1]
+ macStringTemp=parse_qs(urlparse(url).query).get('mac')[0]
  ctx = MiniRacer()
  ctx.eval(js_code)
  response = post(address+'/eportal/InterFace.do',params={'method':'pageInfo'},data={'queryString':queryString},verify=False,)
