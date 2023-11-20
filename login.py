@@ -3,7 +3,7 @@ from requests import get,post
 from encrypt import encryptedPassword
 
 def login(userId,password) :
-   response = get('http://123.123.123.123/', verify=False)
+   response = get('http://123.123.123.123/', verify=False, timeout=10)
    url = response.text.split('\'')[1]
    address = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', url)[0]
    queryString = url.split('?')[1]
@@ -30,5 +30,4 @@ def login(userId,password) :
        data=data,
        verify=False,
    )
-   print(response.text)
    return

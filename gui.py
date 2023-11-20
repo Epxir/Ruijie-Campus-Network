@@ -1,7 +1,8 @@
-import os,sys
+import os,sys,win32api,win32con
 from login import login
 from tkinter import Tk,Label,Entry,Button,Checkbutton,IntVar
 from encrypt import encryptedPassword
+from tkinter import messagebox
 
 def click():
    login(entry1.get(),entry2.get())
@@ -9,15 +10,20 @@ def click():
 
 def service():
    if checkvar.get() == 1 :
-    os.system('sc create ruijie binpath= "' + sys.executable + ' -u ' + entry1.get() + ' -e ' + encryptedPassword(entry2.get()) + '" start= auto')
+    try:
+     os.system('sc create ruijie binpath= "' + sys.executable + ' -u ' + entry1.get() + ' -e ' + encryptedPassword(entry2.get()) + '" start= auto')
+    except Exception as e:
+     messagebox.showerror(message="需要下线校园网后进行设置"+str(e))
    else:
     os.system('sc delete ruijie')
    return
 
-'''
 def reg():
    name = 'ruijie'
-   path = sys.argv[0] + ' -u ' + entry1.get() + ' -e ' + encryptedPassword(entry2.get())
+   try:
+    path = sys.argv[0] + ' -u ' + entry1.get() + ' -e ' + encryptedPassword(entry2.get())
+   except Exception as e:
+     messagebox.showerror(message="需要下线校园网后进行设置"+str(e))
    KeyName = 'Software\Microsoft\Windows\CurrentVersion\Run'
    key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, KeyName, 0, win32con.KEY_ALL_ACCESS)
    if checkvar.get() == 1 :
@@ -26,7 +32,6 @@ def reg():
     win32api.RegDeleteValue(key, name)
    win32api.RegCloseKey(key)
    return
-'''
 
 def gui():
  window = Tk()
@@ -44,7 +49,7 @@ def gui():
  button = Button(window, text="登录",command=click)
  button.grid(row=3, column=1, pady=10)
  checkvar = IntVar(master=window)
- check = Checkbutton(window, text="开机自启", variable=checkvar, onvalue = 1, offvalue = 0, command=service)
+ check = Checkbutton(window, text="开机自启", variable=checkvar, onvalue = 1, offvalue = 0, command=reg)
  check.grid(row=3,column=2)
  window.mainloop()
  return

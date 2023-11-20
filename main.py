@@ -1,4 +1,5 @@
 import argparse,login,gui
+
 if __name__ == '__main__' :
     parser = argparse.ArgumentParser(description='ruijie')
     parser.add_argument('--userId','-u')
@@ -7,7 +8,7 @@ if __name__ == '__main__' :
     if args.userId is not None :
         try:
          login.login(args.userId,args.encryptedPassword)
-        except:
+        except Exception as e:
          pass
     else:
         gui.gui()
